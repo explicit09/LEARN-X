@@ -40,37 +40,39 @@ An AI-powered study companion that helps students learn more effectively by prov
    cd LEARN-X
    ```
 
-2. Set up the backend:
+2. Use the setup script to initialize the project:
    ```bash
-   # Create and activate virtual environment
-   python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   # Make the script executable
+   chmod +x setup.sh
    
-   # Install dependencies
-   pip install -r requirements.txt
+   # Run the setup script
+   ./setup.sh
    ```
-
-3. Set up the frontend:
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-4. Configure environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-5. Run the development servers:
-   ```bash
-   # Backend
-   cd ../backend
-   uvicorn main:app --reload
    
-   # Frontend (in a new terminal)
-   cd ../frontend
-   npm run dev
+   The setup script will:
+   - Install required system dependencies
+   - Set up Python virtual environment
+   - Install backend and frontend dependencies
+   - Configure environment variables from .env.example
+   - Set up PostgreSQL with pgvector (if Docker is available)
+   - Initialize the database schema
+   
+3. Configure environment variables:
+   ```bash
+   # Edit .env with your configuration (created from .env.example)
+   # At minimum, update OPENAI_API_KEY and JWT_SECRET
+   ```
+
+4. Start the application:
+   ```bash
+   # Make the script executable
+   chmod +x start.sh
+   
+   # Start both backend and frontend
+   ./start.sh
+   
+   # Or use Docker for all services
+   ./start.sh docker
    ```
 
 ## Project Structure

@@ -12,4 +12,4 @@ if [ ${#missing_vars[@]} -ne 0 ]; then
   exit 1
 fi
 
-exec uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
+exec uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000}

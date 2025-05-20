@@ -50,7 +50,7 @@ These must be set in Codex **Environment variables / Secrets** *before* the task
 | **Tests** | `pytest -q`                                                                         | All tests pass (exit 0)   |
 | **Lint**  | `black --check backend && isort --check-only backend && flake8 backend` | No diffs / warnings       |
 | **Type**  | `mypy backend`                                                                  | Zero type errors          |
-| **Run**   | `bash start.sh & sleep 5 && curl -s http://localhost:${PORT:-8000}/health`                   | Returns `{"status":"ok"}` |
+| **Run**   | `bash start.sh & sleep 5 && curl -s http://localhost:${PORT:-8000}/`                   | Returns `{"status":"ok"}` |
 
 Codex must run these in the listed order and fail on the first non‑zero status.
 

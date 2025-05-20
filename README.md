@@ -38,6 +38,11 @@ An AI-powered study companion that helps students learn more effectively by prov
    cd LEARN-X
    ```
 
+2. Install dependencies (preferred):
+   ```bash
+   bash setup.sh
+   ```
+
 
 ## Project Structure
 

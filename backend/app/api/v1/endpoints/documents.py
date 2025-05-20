@@ -7,7 +7,10 @@ import shutil
 import tempfile
 import pdfplumber
 import magic
+import numpy as np
 from datetime import datetime
+
+from ....utils.embeddings import get_embeddings
 
 from ....database.session import get_db
 from ....models.user import User
@@ -129,17 +132,42 @@ async def upload_document(
     chunk_overlap = int(os.getenv("CHUNK_OVERLAP", "200"))
     text_chunks = chunk_text(text_pages, chunk_size, chunk_overlap)
     
-    # Store chunks in database
-    for chunk_data in text_chunks:
-        db_chunk = DocumentChunk(
-            content=chunk_data["content"],
-            page_number=chunk_data["page_number"],
-            chunk_index=chunk_data["chunk_index"],
-            document_id=db_document.id
-        )
-        db.add(db_chunk)
-    
-    db.commit()
+    # Generate embeddings for chunks (batch process for efficiency)
+    chunk_contents = [chunk_data["content"] for chunk_data in text_chunks]
+    try:
+        # Generate embeddings in batches to avoid memory issues with large documents
+        batch_size = 32  # Adjust based on available memory
+        all_embeddings = []
+        
+        for i in range(0, len(chunk_contents), batch_size):
+            batch = chunk_contents[i:i+batch_size]
+            batch_embeddings = get_embeddings(batch)
+            all_embeddings.extend(batch_embeddings)
+        
+        # Store chunks with embeddings in database
+        for idx, chunk_data in enumerate(text_chunks):
+            db_chunk = DocumentChunk(
+                content=chunk_data["content"],
+                page_number=chunk_data["page_number"],
+                chunk_index=chunk_data["chunk_index"],
+                document_id=db_document.id,
+                embedding=all_embeddings[idx]  # Add the embedding vector
+            )
+            db.add(db_chunk)
+        
+        db.commit()
+    except Exception as e:
+        # If embedding generation fails, store chunks without embeddings
+        print(f"Error generating embeddings: {e}")
+        for chunk_data in text_chunks:
+            db_chunk = DocumentChunk(
+                content=chunk_data["content"],
+                page_number=chunk_data["page_number"],
+                chunk_index=chunk_data["chunk_index"],
+                document_id=db_document.id
+            )
+            db.add(db_chunk)
+        db.commit()
     
     return {
         "id": db_document.id,

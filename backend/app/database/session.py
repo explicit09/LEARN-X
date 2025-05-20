@@ -1,7 +1,8 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.schema import DDL
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -15,6 +16,13 @@ if not DATABASE_URL:
 
 # Create SQLAlchemy engine
 engine = create_engine(DATABASE_URL)
+
+# Initialize pgvector extension on first connection
+event.listen(
+    engine, 
+    "first_connect",
+    DDL("CREATE EXTENSION IF NOT EXISTS vector")
+)
 
 # Create sessionmaker
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

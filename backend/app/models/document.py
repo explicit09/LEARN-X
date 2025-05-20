@@ -1,5 +1,8 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship
+import numpy as np
+
+from ..database.vector import Vector
 
 from .base import BaseModel
 from ..database.session import Base
@@ -27,8 +30,7 @@ class DocumentChunk(Base, BaseModel):
     page_number = Column(Integer, nullable=True)
     chunk_index = Column(Integer, nullable=False)
     document_id = Column(Integer, ForeignKey("document.id"), nullable=False)
-    # Add embedding column when using pgvector
-    # embedding = Column(Vector(1536))  # Assuming OpenAI embedding dimension
+    embedding = Column(Vector(768), nullable=True)  # For sentence-transformers 768 dimensions
     
     # Relationships
     document = relationship("Document", back_populates="chunks")

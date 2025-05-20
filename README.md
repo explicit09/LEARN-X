@@ -95,6 +95,31 @@ learn-x/
 └── PRD.md
 ```
 
+## Development
+
+Install the dev dependencies before running tests or linting:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Common commands used by Codex for validation:
+
+```bash
+# run tests
+pytest -q
+
+# lint the backend
+black --check backend && isort --check-only backend && flake8 backend
+
+# type checking
+mypy backend
+
+# run the app and check health
+bash start.sh & sleep 5 && curl -s http://localhost:${PORT:-8000}/health
+```
+
+
 ## Contributing
 
 1. Fork the repository

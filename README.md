@@ -32,53 +32,12 @@ An AI-powered study companion that helps students learn more effectively by prov
 - PostgreSQL 13+
 - Docker (optional)
 
-### Installation
-
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/LEARN-X.git
    cd LEARN-X
    ```
 
-2. Use the setup script to initialize the project:
-   ```bash
-   # Make the script executable
-   chmod +x setup.sh
-   
-   # Run the setup script
-   ./setup.sh
-   ```
-   
-   The setup script will:
-   - Install required system dependencies
-   - Set up Python virtual environment
-   - Install backend and frontend dependencies from `requirements.txt`
-   - Configure environment variables from .env.example
-   - Set up PostgreSQL with pgvector (if Docker is available)
-   - Initialize the database schema
-   
-3. Install development dependencies (optional):
-   ```bash
-   pip install -r requirements-dev.txt
-   ```
-
-4. Configure environment variables:
-   ```bash
-   # Edit .env with your configuration (created from .env.example)
-   # At minimum, update OPENAI_API_KEY, JWT_SECRET, LEARNX_ENV, and PORT
-   ```
-
-5. Start the application:
-   ```bash
-   # Make the script executable
-   chmod +x start.sh
-   
-   # Start both backend and frontend
-   ./start.sh
-   
-   # Or use Docker for all services
-   ./start.sh docker
-   ```
 
 ## Project Structure
 
@@ -95,28 +54,6 @@ learn-x/
 └── PRD.md
 ```
 
-## Development
-
-Install the dev dependencies before running tests or linting:
-
-```bash
-pip install -r requirements-dev.txt
-```
-
-Common commands used by Codex for validation:
-
-```bash
-# run tests
-pytest -q
-
-# lint the backend
-black --check backend && isort --check-only backend && flake8 backend
-
-# type checking
-mypy backend
-
-# run the app and check health
-bash start.sh & sleep 5 && curl -s http://localhost:${PORT:-8000}/health
 ```
 
 

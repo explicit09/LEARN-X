@@ -31,7 +31,6 @@ These must be set in Codex **Environment variables / Secrets** *before* the task
 ```
 /
 ├── AGENTS.md              # ← you are here (keep ≤150 lines)
-├── start.sh               # Entry‑point for Codex run phase
 ├── requirements.txt       # Runtime deps only
 ├── requirements-dev.txt   # Tests / lint / type deps
 ├── backend/
@@ -57,14 +56,6 @@ Codex must run these in the listed order and fail on the first non‑zero status
 
 ---
 
-## 4  Setup Script Contract (enforced in CI)
-
-1. Install system libs (`build‑essential`, `libpq‑dev`, `git`, `curl`).
-2. `pip install --upgrade pip wheel setuptools --quiet`.
-3. Pre‑install heavyweight wheels (e.g., `torch==2.2.0+cpu`).
-4. `pip install -r requirements.txt` (runtime only).
-5. Append env vars to `~/.bashrc` so they persist to run phase.
-6. Exit 0 in < 300 s.
 
 ---
 

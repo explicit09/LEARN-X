@@ -20,6 +20,8 @@
 | `DATABASE_URL`   | Postgres connection               | `postgresql://user:pass@db/learnx` |
 | `LEARNX_ENV`     | Runtime mode                      | `dev` / `prod`                     |
 | `PORT`           | HTTP port for the web server      | `8000` (default)                  |
+| `JWT_SECRET`     | JWT signing secret                | `your_jwt_secret_here`     |
+| `FRONTEND_URL`   | Allowed CORS origin               | `http://localhost:3000`    |
 
 
 These must be set in Codex **Environment variables / Secrets** *before* the task runs.

@@ -29,6 +29,8 @@ fi
 missing_vars=()
 [ -z "${OPENAI_API_KEY}" ] && missing_vars+=(OPENAI_API_KEY)
 [ -z "${DATABASE_URL}" ] && missing_vars+=(DATABASE_URL)
+[ -z "${LEARNX_ENV}" ] && missing_vars+=(LEARNX_ENV)
+[ -z "${PORT}" ] && missing_vars+=(PORT)
 
 if [ ${#missing_vars[@]} -ne 0 ]; then
   warn "Missing required environment variables: ${missing_vars[*]}"

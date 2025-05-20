@@ -44,6 +44,7 @@ These must be set in Codex **Environment variables / Secrets** *before* the task
 *Adding new top‑level dirs?* Update this map or the lint target will fail.
 *When internet access is available, run `npm ci` (or `npm install`) inside `frontend/` to install node deps.*
 *Before running the build or test targets, run `pip install -r requirements.txt` to install runtime dependencies.*
+*Prefer `bash setup.sh` to install both Python and Node dependencies in one step.*
 
 ---
 

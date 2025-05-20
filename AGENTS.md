@@ -70,7 +70,7 @@ Need >5 min (e.g., data migration)? Add in task YAML:
 
 * **Runtime** deps pinned in `requirements.txt` (no dev tools).
 * **Dev/Test** deps in `requirements-dev.txt`.
-* Run `pip install -r requirements-dev.txt` *only* inside test/lint targets.
+* Run `pip install -r requirements-dev.txt` *only* inside test, lint, and type targets.
 
 ---
 

@@ -52,18 +52,23 @@ An AI-powered study companion that helps students learn more effectively by prov
    The setup script will:
    - Install required system dependencies
    - Set up Python virtual environment
-   - Install backend and frontend dependencies
+   - Install backend and frontend dependencies from `requirements.txt`
    - Configure environment variables from .env.example
    - Set up PostgreSQL with pgvector (if Docker is available)
    - Initialize the database schema
    
-3. Configure environment variables:
+3. Install development dependencies (optional):
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+4. Configure environment variables:
    ```bash
    # Edit .env with your configuration (created from .env.example)
    # At minimum, update OPENAI_API_KEY and JWT_SECRET
    ```
 
-4. Start the application:
+5. Start the application:
    ```bash
    # Make the script executable
    chmod +x start.sh

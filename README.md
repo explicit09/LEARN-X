@@ -65,7 +65,7 @@ An AI-powered study companion that helps students learn more effectively by prov
 4. Configure environment variables:
    ```bash
    # Edit .env with your configuration (created from .env.example)
-   # At minimum, update OPENAI_API_KEY and JWT_SECRET
+   # At minimum, update OPENAI_API_KEY, JWT_SECRET, LEARNX_ENV, and PORT
    ```
 
 5. Start the application:

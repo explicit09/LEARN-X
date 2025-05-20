@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -57,6 +57,12 @@ async def root():
         "description": "API for Learn-X student learning platform",
         "docs": "/api/docs"
     }
+
+# Simple health check route
+@app.get("/health")
+async def health() -> dict[str, str]:
+    """Return application health status."""
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     import uvicorn

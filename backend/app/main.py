@@ -5,8 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 
-from .database.session import get_db, engine
-from .models import Base
+from .database.session import get_db, engine, Base
 from .api.v1.router import api_router
 
 # Load environment variables
@@ -48,20 +47,9 @@ os.makedirs(uploads_dir, exist_ok=True)
 # Mount static files for uploads
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
-# Root endpoint redirects to API docs
 @app.get("/")
-async def root():
-    return {
-        "name": "Learn-X API",
-        "version": "0.1.0",
-        "description": "API for Learn-X student learning platform",
-        "docs": "/api/docs"
-    }
-
-# Simple health check route
-@app.get("/health")
-async def health() -> dict[str, str]:
-    """Return application health status."""
+async def health():
+    """Health check endpoint"""
     return {"status": "ok"}
 
 if __name__ == "__main__":

@@ -6,13 +6,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    host: true,
+    host: '127.0.0.1', // Changed from true to explicit localhost
     strictPort: false,
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        changeOrigin: true
       }
     }
   }

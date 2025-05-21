@@ -7,15 +7,18 @@ import { fetchDocuments } from '../../services/documents';
 const DashboardPage = () => {
   const [documents, setDocuments] = useState<DashboardDocument[]>([]);
 
+  const loadDocuments = () =>
+    fetchDocuments().then(setDocuments).catch(() => {});
+
   useEffect(() => {
     // TODO: handle loading state and errors
-    fetchDocuments().then(setDocuments).catch(() => {});
+    loadDocuments();
   }, []);
 
   return (
     <Container maxW="container.lg" py={8}>
       <Heading size="lg" mb={4}>Your Documents</Heading>
-      <DragDropUpload />
+      <DragDropUpload onUpload={loadDocuments} />
       <DocumentList documents={documents} />
     </Container>
   );

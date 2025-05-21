@@ -7,6 +7,7 @@ import {
   Button,
   VStack
 } from '@chakra-ui/react';
+import { updatePreferences } from '../../services/preferences';
 
 export interface Preferences {
   learningStyle: string;
@@ -30,8 +31,9 @@ const SettingsPanel = ({ initial }: SettingsPanelProps) => {
   };
 
   const handleSave = () => {
-    // TODO: persist preferences via API
-    console.log('Saving preferences', prefs);
+    updatePreferences(prefs).catch(() => {
+      console.error('Failed to save preferences');
+    });
   };
 
   return (

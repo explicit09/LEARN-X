@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   Box,
   Input,
@@ -19,7 +19,11 @@ interface Message {
   timestamp: Date;
 }
 
-const ChatInterface = () => {
+export interface ChatInterfaceHandle {
+  askQuestion: (text: string) => void;
+}
+
+const ChatInterface = forwardRef<ChatInterfaceHandle>((_, ref) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -33,31 +37,43 @@ const ChatInterface = () => {
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   
-  const handleSendMessage = () => {
-    if (!input.trim()) return;
-    
-    // Add user message
+  const addUserMessage = (text: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: input,
+      content: text,
       sender: 'user',
       timestamp: new Date()
     };
-    
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    
-    // Simulate AI response (in a real app, this would call your backend)
+  };
+
+  const simulateAIResponse = () => {
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `This is a simulated response. In the actual application, this would be a response from your AI about the document you're viewing.`,
+        content:
+          'This is a simulated response. In the actual application, this would be a response from your AI about the document you\'re viewing.',
         sender: 'ai',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, aiMessage]);
     }, 1000);
   };
+
+  const handleSendMessage = () => {
+    if (!input.trim()) return;
+    addUserMessage(input);
+    setInput('');
+    simulateAIResponse();
+  };
+
+  useImperativeHandle(ref, () => ({
+    askQuestion(text: string) {
+      if (!text.trim()) return;
+      addUserMessage(text);
+      simulateAIResponse();
+    }
+  }));
   
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {

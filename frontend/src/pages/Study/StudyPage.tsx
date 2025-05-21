@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Box, 
   Button, 
@@ -17,12 +17,13 @@ import {
 } from '@chakra-ui/react';
 import { SplitScreenLayout } from '../../components/Layout';
 import { PDFViewer } from '../../components/DocumentViewer';
-import { ChatInterface } from '../../components/Chat';
+import { ChatInterface, ChatInterfaceHandle } from '../../components/Chat';
 import { useParams } from 'react-router-dom';
 
 const StudyPage = () => {
   const [documentUrl, setDocumentUrl] = useState<string>('');
   const [hasDocument, setHasDocument] = useState<boolean>(false);
+  const chatRef = useRef<ChatInterfaceHandle>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { docId } = useParams<{ docId?: string }>();
 
@@ -104,8 +105,8 @@ const StudyPage = () => {
   return (
     <Box h="100vh">
       <SplitScreenLayout
-        leftContent={<PDFViewer fileUrl={documentUrl} />}
-        rightContent={<ChatInterface />}
+        leftContent={<PDFViewer fileUrl={documentUrl} onTextSelect={(t) => chatRef.current?.askQuestion(t)} />}
+        rightContent={<ChatInterface ref={chatRef} />}
         initialLeftSize={60}
       />
     </Box>

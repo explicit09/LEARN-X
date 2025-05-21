@@ -43,6 +43,21 @@ An AI-powered study companion that helps students learn more effectively by prov
    bash setup.sh
    ```
 
+## Environment Configuration
+
+Before running the application, you need to set up your environment variables.
+
+1.  **Copy the example environment file:**
+    ```bash
+    cp .env.example .env
+    ```
+2.  **Update `.env`:**
+    Open the newly created `.env` file and update the following variables:
+    *   `OPENAI_API_KEY`: Your OpenAI API key.
+    *   `JWT_SECRET`: A strong, unique secret for signing JWTs. You can generate one using a tool like `openssl rand -hex 32`.
+
+    Ensure other variables like `DATABASE_URL`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` are suitable for your environment if you're not using the default Docker setup. For the default Docker setup (`docker-compose up`), the pre-configured database values should work out of the box.
+
 ### Running with Docker
 
 1. Copy `.env.example` to `.env` and fill in the required values.

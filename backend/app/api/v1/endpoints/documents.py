@@ -21,7 +21,9 @@ router = APIRouter()
 
 # Configuration
 UPLOAD_DIR = os.path.join(os.getcwd(), "uploads")
-MAX_UPLOAD_SIZE = int(os.getenv("MAX_UPLOAD_SIZE", "10")) * 1024 * 1024  # Default 10MB
+# Split the env value by space in case there's a comment
+upload_size_value = os.getenv("MAX_UPLOAD_SIZE", "10").split()[0]
+MAX_UPLOAD_SIZE = int(upload_size_value) * 1024 * 1024  # Default 10MB
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -128,8 +130,8 @@ async def upload_document(
     db.refresh(db_document)
     
     # Process text into chunks for vector database
-    chunk_size = int(os.getenv("CHUNK_SIZE", "1000"))
-    chunk_overlap = int(os.getenv("CHUNK_OVERLAP", "200"))
+    chunk_size = int(os.getenv("CHUNK_SIZE", "1000").split()[0])
+    chunk_overlap = int(os.getenv("CHUNK_OVERLAP", "200").split()[0])
     text_chunks = chunk_text(text_pages, chunk_size, chunk_overlap)
     
     # Generate embeddings for chunks (batch process for efficiency)
@@ -146,14 +148,25 @@ async def upload_document(
         
         # Store chunks with embeddings in database
         for idx, chunk_data in enumerate(text_chunks):
-            db_chunk = DocumentChunk(
-                content=chunk_data["content"],
-                page_number=chunk_data["page_number"],
-                chunk_index=chunk_data["chunk_index"],
-                document_id=db_document.id,
-                embedding=all_embeddings[idx]  # Add the embedding vector
-            )
-            db.add(db_chunk)
+            try:
+                db_chunk = DocumentChunk(
+                    content=chunk_data["content"],
+                    page_number=chunk_data["page_number"],
+                    chunk_index=chunk_data["chunk_index"],
+                    document_id=db_document.id,
+                    embedding=all_embeddings[idx]  # Add the embedding vector
+                )
+                db.add(db_chunk)
+            except Exception as chunk_error:
+                print(f"Error storing chunk with embedding: {chunk_error}")
+                # Store chunk without embedding as fallback
+                db_chunk = DocumentChunk(
+                    content=chunk_data["content"],
+                    page_number=chunk_data["page_number"],
+                    chunk_index=chunk_data["chunk_index"],
+                    document_id=db_document.id
+                )
+                db.add(db_chunk)
         
         db.commit()
     except Exception as e:

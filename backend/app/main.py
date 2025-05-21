@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy.exc import OperationalError, SQLAlchemyError, ProgrammingError
 from sqlalchemy import text
 from dotenv import load_dotenv
 
@@ -29,30 +29,35 @@ def init_db():
             # Try to create all tables
             logger.info(f"Attempting to connect to the database (attempt {attempt + 1}/{max_retries})...")
             
-            # First create the schema and set permissions
-            create_schema()
-            logger.info("Database schema created and permissions set")
-            
             # Test the connection
             with engine.connect() as conn:
-                conn.execute(text("SELECT 1"))
+                # Execute a simple query to test the connection
+                result = conn.execute(text("SELECT 1"))
+                assert result.scalar() == 1
                 logger.info("Database connection test successful")
                 
                 # Enable pgvector extension if not enabled
                 try:
-                    conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-                    logger.info("pgvector extension enabled")
+                    with engine.begin() as trans_conn:
+                        trans_conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                    logger.info("pgvector extension enabled or already exists")
                 except Exception as e:
                     logger.warning(f"Could not enable pgvector extension: {e}")
+                    logger.warning("Continuing without pgvector extension - some vector functionality may be limited")
+                    # Don't fail - continue without pgvector
                 
                 # Create tables if they don't exist
+                logger.info("Creating database tables if they don't exist...")
                 Base.metadata.create_all(bind=engine)
                 logger.info("Database tables created/verified")
-                    
+                
+                # Commit any pending transactions
+                conn.commit()
+                
             logger.info("Database initialization completed successfully")
             return True
             
-        except (OperationalError, ProgrammingError) as e:
+        except Exception as e:
             if attempt < max_retries - 1:
                 logger.warning(f"Database connection failed (attempt {attempt + 1}/{max_retries}): {str(e)}")
                 time.sleep(retry_delay * (attempt + 1))  # Exponential backoff

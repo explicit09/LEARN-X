@@ -10,7 +10,7 @@ ENV NODE_ENV=development \
 
 # Install dependencies first (for better caching)
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install
 
 # Create a non-root user and switch to it
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup

@@ -8,9 +8,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.j
 
 interface PDFViewerProps {
   fileUrl: string;
+  onTextSelect?: (text: string) => void;
 }
 
-const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
+const PDFViewer = ({ fileUrl, onTextSelect }: PDFViewerProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -98,8 +99,7 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
   const handleTextSelection = () => {
     const text = window.getSelection()?.toString();
     if (text) {
-      // TODO: send selected text to generate a question automatically
-      console.log('Selected text:', text);
+      onTextSelect?.(text);
     }
   };
 

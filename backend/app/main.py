@@ -1,18 +1,76 @@
 import os
-from fastapi import FastAPI
+import logging
+import time
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy import text
 from dotenv import load_dotenv
 
-from .database.session import get_db, engine, Base
+from .database.session import get_db, engine, Base, SessionLocal
 from .api.v1.router import api_router
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
 
-# Create all database tables
-Base.metadata.create_all(bind=engine)
+def init_db():
+    """Initialize database with retry logic"""
+    max_retries = 5
+    retry_delay = 5  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            # Try to create all tables
+            logger.info(f"Attempting to connect to the database (attempt {attempt + 1}/{max_retries})...")
+            
+            # First create the schema and set permissions
+            create_schema()
+            logger.info("Database schema created and permissions set")
+            
+            # Test the connection
+            with engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+                logger.info("Database connection test successful")
+                
+                # Enable pgvector extension if not enabled
+                try:
+                    conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                    logger.info("pgvector extension enabled")
+                except Exception as e:
+                    logger.warning(f"Could not enable pgvector extension: {e}")
+                
+                # Create tables if they don't exist
+                Base.metadata.create_all(bind=engine)
+                logger.info("Database tables created/verified")
+                    
+            logger.info("Database initialization completed successfully")
+            return True
+            
+        except (OperationalError, ProgrammingError) as e:
+            if attempt < max_retries - 1:
+                logger.warning(f"Database connection failed (attempt {attempt + 1}/{max_retries}): {str(e)}")
+                time.sleep(retry_delay * (attempt + 1))  # Exponential backoff
+                continue
+            logger.error(f"❌ Failed to connect to database after {max_retries} attempts")
+            logger.error("Please check your database connection settings in .env")
+            logger.error(f"DATABASE_URL: {os.environ.get('DATABASE_URL', 'Not set')}")
+            raise
+            
+        except Exception as e:
+            logger.error(f"❌ Error initializing database: {str(e)}")
+            logger.error("Please check your database configuration and ensure the database is accessible")
+            if hasattr(e, 'orig') and hasattr(e.orig, 'pgerror'):
+                logger.error(f"Database error: {e.orig.pgerror}")
+            raise
+
+# Initialize database with retry logic
+init_db()
 
 # Initialize FastAPI app
 app = FastAPI(

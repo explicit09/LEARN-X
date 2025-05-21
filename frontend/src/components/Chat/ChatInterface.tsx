@@ -2,7 +2,6 @@ import { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   Box,
   Input,
-  Button,
   Flex,
   Text,
   VStack,
@@ -23,7 +22,7 @@ export interface ChatInterfaceHandle {
   askQuestion: (text: string) => void;
 }
 
-const ChatInterface = forwardRef<ChatInterfaceHandle>((_, ref) => {
+const ChatInterface = forwardRef<ChatInterfaceHandle, {}>((_, ref) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',

@@ -1,25 +1,6 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: ankane/pgvector:latest
-    container_name: learnx-postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-learnx}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-  
   # Backend FastAPI Service
   backend:
     build:
@@ -28,17 +9,29 @@ services:
     container_name: learnx-backend
     restart: always
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-learnx}
+      - DATABASE_URL=${DATABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - LEARNX_ENV=${LEARNX_ENV:-dev}
-      - PORT=8000
+      - LEARNX_ENV=${LEARNX_ENV}
+      - JWT_SECRET=${JWT_SECRET}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - PORT=${PORT}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
     ports:
       - "8000:8000"
-    depends_on:
-      postgres:
-        condition: service_healthy
     volumes:
       - ./backend:/app
+      - /app/__pycache__
+      - /app/.pytest_cache
+    networks:
+      - learnx-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
   
   # Frontend React Service
   frontend:
@@ -50,12 +43,30 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/dist
+      - /app/.next
+      - /app/.vite
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - NODE_ENV=development
+      - VITE_API_URL=http://backend:8000
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+    networks:
+      - learnx-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
-volumes:
-  postgres-data:
+networks:
+  learnx-network:
+    driver: bridge

@@ -1,21 +1,22 @@
-import { useEffect, useRef, useState } from 'react'; // Added useRef
+import { useEffect, useState } from 'react';
 import { Box, Button, Heading, Text } from '@chakra-ui/react';
 import DragDropUpload from '../../components/Dashboard/DragDropUpload';
 import DocCard from '../../components/Dashboard/DocCard';
 import DocCardSkeleton from '../../components/Dashboard/DocCardSkeleton';
 import EmptyState from '../../components/Dashboard/EmptyState';
-import { DocumentPlusIcon } from '@heroicons/react/24/outline'; // Import the icon
-import { fetchDocuments, Document as ApiDocument } from '../../services/documents';
+import { DocumentAddIcon } from '@heroicons/react/outline';
+import { fetchDocuments } from '../../services/documents';
 
-interface DashboardDisplayDocument extends ApiDocument {
+interface Document {
+  id: string;
+  name: string;
   lastOpened: string;
   progress?: number;
 }
 
 const DashboardPage = () => {
-  const [documents, setDocuments] = useState<DashboardDisplayDocument[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
-  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the hidden file input in DragDropUpload
 
   // This function will be passed to DragDropUpload to set its internal input ref
   // However, DragDropUpload itself doesn't expose its input ref directly.
@@ -36,7 +37,8 @@ const DashboardPage = () => {
     fetchDocuments()
       .then(apiDocs => {
         const displayDocs = apiDocs.map(doc => ({
-          ...doc,
+          id: doc.id.toString(),
+          name: doc.title || 'Untitled Document',
           lastOpened: "2 days ago", // Placeholder
           progress: Math.floor(Math.random() * 100), // Placeholder
         }));
@@ -106,7 +108,7 @@ const DashboardPage = () => {
           <div className="col-span-full"> {/* Ensure EmptyState can span full width */}
             <EmptyState 
               onUploadClick={triggerUploadFunction}
-              iconElement={<DocumentPlusIcon className="w-32 h-32 text-accent" />}
+              iconElement={<DocumentAddIcon className="w-32 h-32 text-accent" />}
               headline="Unlock AI Tutoring for Your Courses"
               subtext="Drop a syllabus or any PDF to get started."
               buttonText="Upload Your First PDF"

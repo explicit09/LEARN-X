@@ -88,16 +88,23 @@ app = FastAPI(
 )
 
 # Configure CORS
-allowed_origins = [os.getenv("FRONTEND_URL", "http://localhost:3000")]
+# Allow all origins in development, specific origins in production
 if os.getenv("LEARNX_ENV") == "dev":
-    allowed_origins.append("*")
+    allow_origins = ["*"]
+else:
+    allow_origins = [
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "https://your-production-domain.com"
+    ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 # Include API router

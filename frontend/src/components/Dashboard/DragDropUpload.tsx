@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'; // Added useState
 import { Box, Text, VStack, Spinner } from '@chakra-ui/react'; // Added Spinner
-import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import { UploadIcon } from '@heroicons/react/outline';
 import { uploadDocument } from '../../services/documents';
 
 interface DragDropUploadProps {
@@ -85,7 +85,7 @@ const DragDropUpload = ({
         </VStack>
       ) : (
         <VStack spacing={4}>
-          <ArrowUpTrayIcon className="w-12 h-12 text-gray-400" />
+          <UploadIcon className="w-12 h-12 text-gray-400" />
           <Text className="text-xl text-gray-600">{mainText}</Text>
           <Text className="text-sm text-gray-500">{subText}</Text>
         </VStack>

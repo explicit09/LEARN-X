@@ -1,4 +1,4 @@
-import { DocumentTextIcon } from '@heroicons/react/24/outline'; // Example icon, needs installation
+import { DocumentTextIcon } from '@heroicons/react/outline'; // Using Heroicons v1
 
 interface DocCardProps {
   title: string;

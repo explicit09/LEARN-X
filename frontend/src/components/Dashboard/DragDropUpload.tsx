@@ -1,14 +1,24 @@
 import { useRef } from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { uploadDocument } from '../../services/documents';
 
-const DragDropUpload = () => {
+interface DragDropUploadProps {
+  onUpload?: () => void;
+}
+const DragDropUpload = ({ onUpload }: DragDropUploadProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
-    // TODO: upload document via API
-    console.log('Uploading file', file.name);
+    uploadDocument(file)
+      .then(() => {
+        console.log('Uploaded file', file.name);
+        onUpload?.();
+      })
+      .catch(() => {
+        console.error('Failed to upload', file.name);
+      });
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {

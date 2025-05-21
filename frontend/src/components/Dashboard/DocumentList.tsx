@@ -1,4 +1,5 @@
 import { VStack, Button, Box } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 
 export interface DashboardDocument {
   id: number;
@@ -13,16 +14,18 @@ const DocumentList = ({ documents }: DocumentListProps) => {
   return (
     <VStack align="stretch" spacing={2} mt={4}>
       {documents.map((doc) => (
-        <Button key={doc.id} variant="ghost" justifyContent="flex-start">
-          {/* TODO: link to open document viewer */}
+        <Button
+          key={doc.id}
+          as={RouterLink}
+          to={`/study/${doc.id}`}
+          variant="ghost"
+          justifyContent="flex-start"
+        >
           {doc.title}
         </Button>
       ))}
       {documents.length === 0 && (
-        <Box color="gray.500" textAlign="center">
-          {/* TODO: fetch documents from API */}
-          No documents yet
-        </Box>
+        <Box color="gray.500" textAlign="center">No documents yet</Box>
       )}
     </VStack>
   );

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { 
+import { useState, useEffect } from 'react';
+import {
   Box, 
   Button, 
   Container,
@@ -18,11 +18,20 @@ import {
 import { SplitScreenLayout } from '../../components/Layout';
 import { PDFViewer } from '../../components/DocumentViewer';
 import { ChatInterface } from '../../components/Chat';
+import { useParams } from 'react-router-dom';
 
 const StudyPage = () => {
   const [documentUrl, setDocumentUrl] = useState<string>('');
   const [hasDocument, setHasDocument] = useState<boolean>(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { docId } = useParams<{ docId?: string }>();
+
+  useEffect(() => {
+    if (docId) {
+      setDocumentUrl(`/api/v1/documents/${docId}/download`);
+      setHasDocument(true);
+    }
+  }, [docId]);
 
   // For demo purposes, we'll use a sample PDF URL when the user clicks "Load Sample"
   const handleLoadSample = () => {

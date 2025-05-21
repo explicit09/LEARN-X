@@ -43,6 +43,15 @@ An AI-powered study companion that helps students learn more effectively by prov
    bash setup.sh
    ```
 
+### Running with Docker
+
+1. Copy `.env.example` to `.env` and fill in the required values.
+2. Start the services:
+   ```bash
+   docker compose up -d
+   ```
+3. Visit `http://localhost:3000` to access the frontend.
+
 
 ## Project Structure
 

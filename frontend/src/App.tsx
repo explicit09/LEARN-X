@@ -3,6 +3,8 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 
 import { LoginPage, RegisterPage } from './pages/Auth'
+import { DashboardPage } from './pages/Dashboard'
+import { SettingsPage } from './pages/Settings'
 
 // Import our components
 import { SplitScreenLayout } from './components/Layout'
@@ -103,6 +105,15 @@ const Navigation = () => {
       </Flex>
 
       <Box display={{ base: 'block', md: 'flex' }}>
+        <ChakraLink as={Link} to="/dashboard">
+          <Button
+            variant={location.pathname === '/dashboard' ? 'solid' : 'ghost'}
+            mr={3}
+            _hover={{ bg: 'teal.700' }}
+          >
+            Dashboard
+          </Button>
+        </ChakraLink>
         <ChakraLink as={Link} to="/study">
           <Button
             variant={location.pathname === '/study' ? 'solid' : 'ghost'}
@@ -129,6 +140,14 @@ const Navigation = () => {
             Register
           </Button>
         </ChakraLink>
+        <ChakraLink as={Link} to="/settings">
+          <Button
+            variant={location.pathname === '/settings' ? 'solid' : 'ghost'}
+            _hover={{ bg: 'teal.700' }}
+          >
+            Settings
+          </Button>
+        </ChakraLink>
       </Box>
     </Flex>
   )
@@ -142,9 +161,11 @@ function App() {
       <Box pt={2} px={2}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/study" element={<StudyPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </Box>
     </Box>

@@ -95,6 +95,14 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
     setScale(prev => Math.max(prev - 0.2, 0.5)); // Min zoom: 0.5x
   };
 
+  const handleTextSelection = () => {
+    const text = window.getSelection()?.toString();
+    if (text) {
+      // TODO: send selected text to generate a question automatically
+      console.log('Selected text:', text);
+    }
+  };
+
   return (
     <Box className="pdf-viewer" w="100%" h="100%" bg="white" borderRadius="md" overflow="hidden">
       {loading && (
@@ -133,7 +141,14 @@ const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
           </Flex>
         </Flex>
         
-        <Box flex="1" p={4} overflow="auto" display="flex" justifyContent="center">
+        <Box
+          flex="1"
+          p={4}
+          overflow="auto"
+          display="flex"
+          justifyContent="center"
+          onMouseUp={handleTextSelection}
+        >
           <canvas ref={canvasRef} />
         </Box>
       </Flex>

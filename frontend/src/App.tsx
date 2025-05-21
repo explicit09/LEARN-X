@@ -2,6 +2,8 @@ import { Box, Button, Container, Flex, Heading, Text, Link as ChakraLink, VStack
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 
+import { LoginPage, RegisterPage } from './pages/Auth'
+
 // Import our components
 import { SplitScreenLayout } from './components/Layout'
 import { PDFViewer } from './components/DocumentViewer'
@@ -102,12 +104,29 @@ const Navigation = () => {
 
       <Box display={{ base: 'block', md: 'flex' }}>
         <ChakraLink as={Link} to="/study">
-          <Button 
-            variant={location.pathname === '/study' ? 'solid' : 'ghost'} 
-            mr={3} 
+          <Button
+            variant={location.pathname === '/study' ? 'solid' : 'ghost'}
+            mr={3}
             _hover={{ bg: 'teal.700' }}
           >
             Study
+          </Button>
+        </ChakraLink>
+        <ChakraLink as={Link} to="/login">
+          <Button
+            variant={location.pathname === '/login' ? 'solid' : 'ghost'}
+            mr={3}
+            _hover={{ bg: 'teal.700' }}
+          >
+            Login
+          </Button>
+        </ChakraLink>
+        <ChakraLink as={Link} to="/register">
+          <Button
+            variant={location.pathname === '/register' ? 'solid' : 'ghost'}
+            _hover={{ bg: 'teal.700' }}
+          >
+            Register
           </Button>
         </ChakraLink>
       </Box>
@@ -124,6 +143,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/study" element={<StudyPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </Box>
     </Box>

@@ -1,7 +1,9 @@
-import { Box, Button, Container, Flex, Heading, Text, Link as ChakraLink } from '@chakra-ui/react'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import { Box, Container, Flex, Heading, Text, Link as ChakraLink } from '@chakra-ui/react'; // Removed Button
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
-import { LoginPage, RegisterPage } from './pages/Auth'
+import Sidebar from './components/Layout/Sidebar';
+import Header from './components/Layout/Header'; // Import Header
+import { LoginPage, RegisterPage } from './pages/Auth';
 import { DashboardPage } from './pages/Dashboard'
 import { SettingsPage } from './pages/Settings'
 import { StudyPage } from './pages/Study'
@@ -16,7 +18,7 @@ const Home = () => {
         <Heading
           display="inline-block"
           as="h1"
-          size="2xl"
+          size="3xl"
           bgGradient="linear(to-r, teal.400, teal.600)"
           backgroundClip="text"
         >
@@ -42,83 +44,23 @@ const Home = () => {
   )
 }
 
-// Navigation component
-const Navigation = () => {
-  const location = useLocation();
-  
-  return (
-    <Flex 
-      as="nav"
-      align="center"
-      justify="space-between"
-      wrap="wrap"
-      padding="1rem"
-      bg="teal.500"
-      color="white"
-    >
-      <Flex align="center" mr={5}>
-        <ChakraLink as={Link} to="/">
-          <Heading as="h1" size="lg" letterSpacing="tight">
-            LEARN-X
-          </Heading>
-        </ChakraLink>
-      </Flex>
-
-      <Box display={{ base: 'block', md: 'flex' }}>
-        <ChakraLink as={Link} to="/dashboard">
-          <Button
-            variant={location.pathname === '/dashboard' ? 'solid' : 'ghost'}
-            mr={3}
-            _hover={{ bg: 'teal.700' }}
-          >
-            Dashboard
-          </Button>
-        </ChakraLink>
-        <ChakraLink as={Link} to="/study">
-          <Button
-            variant={location.pathname === '/study' ? 'solid' : 'ghost'}
-            mr={3}
-            _hover={{ bg: 'teal.700' }}
-          >
-            Study
-          </Button>
-        </ChakraLink>
-        <ChakraLink as={Link} to="/login">
-          <Button
-            variant={location.pathname === '/login' ? 'solid' : 'ghost'}
-            mr={3}
-            _hover={{ bg: 'teal.700' }}
-          >
-            Login
-          </Button>
-        </ChakraLink>
-        <ChakraLink as={Link} to="/register">
-          <Button
-            variant={location.pathname === '/register' ? 'solid' : 'ghost'}
-            _hover={{ bg: 'teal.700' }}
-          >
-            Register
-          </Button>
-        </ChakraLink>
-        <ChakraLink as={Link} to="/settings">
-          <Button
-            variant={location.pathname === '/settings' ? 'solid' : 'ghost'}
-            _hover={{ bg: 'teal.700' }}
-          >
-            Settings
-          </Button>
-        </ChakraLink>
-      </Box>
-    </Flex>
-  )
-}
-
 // Main App
 function App() {
+  const location = useLocation();
+  const authenticatedRoutes = ['/dashboard', '/study', '/settings'];
+  // Check if the current path starts with any of the authenticated routes
+  const isAuthenticathedRoute = authenticatedRoutes.some(route => location.pathname.startsWith(route));
+
   return (
     <Box>
-      <Navigation />
-      <Box pt={2} px={2}>
+      {isAuthenticathedRoute ? <Sidebar /> : <Header />} {/* Use Header component */}
+      <Box
+        pt={isAuthenticathedRoute ? 0 : 2} // Restored original padding logic
+        px={2}
+        maxW={isAuthenticathedRoute ? "7xl" : "4xl"}
+        mx="auto"
+        className={`transition-all duration-300 ease-in-out ${isAuthenticathedRoute ? 'sm:ml-64' : 'ml-0'}`} // ml-64 only on sm+ screens
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<DashboardPage />} />

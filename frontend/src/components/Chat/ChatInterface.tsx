@@ -149,6 +149,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, {}>((_, ref) => {
       </Flex>
     </Flex>
   );
-};
+});
 
 export default ChatInterface;

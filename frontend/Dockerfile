@@ -25,4 +25,4 @@ USER appuser
 EXPOSE 3000
 
 # Command to run the application in development mode
-CMD ["npm", "run", "dev:docker"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

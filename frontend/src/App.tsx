@@ -1,6 +1,5 @@
-import { Box, Button, Container, Flex, Heading, Text, Link as ChakraLink, VStack } from '@chakra-ui/react'
+import { Box, Button, Container, Flex, Heading, Text, Link as ChakraLink } from '@chakra-ui/react'
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
 
 import { LoginPage, RegisterPage } from './pages/Auth'
 import { DashboardPage } from './pages/Dashboard'
